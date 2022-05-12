@@ -1,9 +1,7 @@
 <!doctype html>
 
 <head>
-
-    <title>{% block title %}{% endblock %} - Flaskr</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Project Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <section class="content">
@@ -21,11 +19,18 @@
     <!-- tailwind admin navbar -->
     <nav class="flex items-center justify-between flex-wrap bg-gray-800 p-6">
         <div class="flex items-center flex-shrink-0 text-white mr-6">
-            <a class="font-semibold text-xl tracking-tight">
-                Project Learner Admin Panel / Subjects
+            <a href="/" class="text-white font-bold no-underline">
+                <span class="text-xl">Project Learner: Admin Panel</span>
             </a>
         </div>
-
+        <div class="flex items-center flex-shrink-0 text-white">
+            <a href="{{ url_for('admin.create_subject') }}" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Add Subject</span>
+            </a>
+            <a href="#aboutus" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Log Out</span>
+            </a>
+        </div>
     </nav>
 
     <!-- tailwind heading -->
@@ -47,6 +52,7 @@
                         <tr>
                             <th class="px-4 py-2">Sl.no</th>
                             <th class="px-4 py-2">Subject Name</th>
+                            <th class="px-4 py-2">Subject Description</th>
                             <th class="px-4 py-2">Visit</th>
                         </tr>
                     </thead>
@@ -55,6 +61,9 @@
                         <tr>
                             <td class="border px-4 py-2">{{ item.id }}</td>
                             <td class="border px-4 py-2">{{ item.name }}</td>
+                            <td class="border px-4 py-2">{{
+                                item.description[:
+                                30 if 30 < item.description.__len__() else item.description.__len__()]+'...' }} </td>
                             <td class="border px-4 py-2">
                                 <!-- tailwind button like a -->
                                 <a href="{{ url_for('admin.subjects_show', subject_id=item.id) }}"

@@ -2,31 +2,30 @@
 
 <head>
     <title>{{ subject.name }} | Project Learn</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <section>
     <!-- tailwind admin navbar -->
-    <!-- tailwind admin navbar -->
     <nav class="flex items-center justify-between flex-wrap bg-gray-800 p-6">
         <div class="flex items-center flex-shrink-0 text-white mr-6">
             <a href="/" class="text-white font-bold no-underline">
-                <span class="text-xl">Project Learner: Admin Panel</span>
+                <span class="text-xl">Project Learner</span>
             </a>
         </div>
         <div class="flex items-center flex-shrink-0 text-white">
-            <a href="{{ url_for('admin.admin_home') }}" class="text-white font-bold no-underline px-2">
-                <span class="text-xl">Admin Home</span>
+            <a href="/" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Home</span>
+            </a>
+            <a href="#subjects" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Subjects</span>
             </a>
             <a href="#aboutus" class="text-white font-bold no-underline px-2">
-                <span class="text-xl">Log Out</span>
+                <span class="text-xl">About</span>
             </a>
         </div>
     </nav>
-    <header class="px-6 py-2">
-        Admin Panel / Subjects / {{ subject.name }}
-    </header>
-
     <!-- tailwind heading -->
     <div class="flex flex-col md:flex-row">
         <div class="flex-1 min-h-screen">
@@ -35,9 +34,10 @@
                     {{ subject.name }}
                 </h1>
                 <p class="text-center font-light leading-tight">
-                    {{ subject.description }}
+                    // here the subject de`scription
                 </p>
 
+                <br><br>
                 <hr><br>
 
                 <table class="table-auto">
@@ -45,13 +45,7 @@
                         <tr>
                             <th class="px-4 py-2">Sl.no</th>
                             <th class="px-4 py-2">Topic Name</th>
-                            <th class="px-4 py-2">Topic Overview</th>
                             <th class="px-4 py-2">
-                                <!-- tailwind link button -->
-                                <a href="{{ url_for('admin.create_topic', subject_id=subject.id) }}"
-                                    class="text-blue-500 text-sm">
-                                    <span class="text-xl">Add Topic</span>
-                                </a>
                             </th>
                         </tr>
                     </thead>
@@ -60,13 +54,12 @@
                         <tr>
                             <td class="border px-4 py-2">{{ item.id }}</td>
                             <td class="border px-4 py-2">{{ item.name }}</td>
-                            <td class="border px-4 py-2">{{
-                                item.content[:
-                                30 if 30 < item.content.__len__() else item.content.__len__()]+'...' }} </td>
                             <td class="border px-4 py-2">
                                 <!-- tailwind button like a -->
-                                <a href="{{ url_for('admin.topic_show', topic_id=item.id) }}"
-                                    class="text-blue-500 text-sm"> View </a>
+                                <a href="{{ url_for('admin.subjects_show', id=item.id) }}"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Read
+                                </a>
                             </td>
                         </tr>
                         {% endfor %}

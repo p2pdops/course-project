@@ -10,23 +10,51 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 @bp.before_app_request
 def load_admin_loggedin():
-    admin_logged_in = session.get('admin_logged_in')
+    admin_logged_in = session.get('admin')
     if admin_logged_in is None:
         g.admin = None
+        login_path = url_for('auth.login')
+        if request.path != login_path:
+            return redirect(login_path)
     else:
         g.admin = True
+        g.user = get_db().execute("SELECT * FROM users WHERE id = '1'").fetchone()
 
 
-@bp.route('/subjects')
-def subjects_list():
+@bp.route('/')
+def admin_home():
     subjects = get_db().execute(
         'SELECT * FROM subjects'
     ).fetchall()
     return render_template(
-        'admin/subjects-list.html',
+        'admin/index.html',
         subtitle="Admin/ Subjects/ all",
         subjects=subjects
     )
+
+
+@bp.route('/subjects/create', methods=('GET', 'POST'))
+def create_subject():
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        db = get_db()
+        error = None
+        if not name:
+            error = 'Subject name is required.'
+        if error is None:
+            try:
+                db.execute(
+                    f"INSERT INTO subjects(name, description) " +
+                    f"VALUES('{name}', '{description}')")
+                db.commit()
+            except db.IntegrityError:
+                error = f"Subject {name} is already registered."
+            else:
+                return redirect(url_for("admin.admin_home"))
+        flash(error)
+    else:
+        return render_template('admin/subject-create.html')
 
 
 @bp.route('/subjects/show')
@@ -38,7 +66,7 @@ def subjects_show():
     topics = get_db().execute(
         f"SELECT * FROM topics where subject_id = '{subject_id}'"
     ).fetchall()
-    print('subject data', subject_id, subject)
+    print('subject data', subject_id, subject, topics)
     return render_template(
         'admin/subjects-show.html',
         subtitle="Admin/ Subjects/ Show",
@@ -47,39 +75,24 @@ def subjects_show():
     )
 
 
-@bp.route('/create-subject', methods=('GET', 'POST'))
-def create_subject():
-    if request.method == 'POST':
-        name = request.form['name']
-        db = get_db()
-        error = None
-        if not name:
-            error = 'Subject name is required.'
-        if error is None:
-            try:
-                db.execute(f"INSERT INTO subjects (name) VALUES ('{name}')")
-                db.commit()
-            except db.IntegrityError:
-                error = f"Subject {name} is already registered."
-            else:
-                return redirect(url_for("admin.subjects_list"))
-        flash(error)
-    else:
-        return render_template('admin/create-subject.html')
-
-
-@bp.route('/create-topic', methods=('GET', 'POST'))
+@bp.route('/topic/create', methods=('GET', 'POST'))
 def create_topic():
+    subject_id = request.args.get('subject_id')
     if request.method == 'POST':
-        subject_id = request.form['subject_id']
         name = request.form['name']
+        # description = request.form['description']
+        content = request.form['content']
         db = get_db()
         error = None
         if not name:
             error = 'Subject name is required.'
         if error is None:
             try:
-                db.execute(f"INSERT INTO subjects (name) VALUES ('{name}')")
+                db.execute(
+                    "INSERT INTO topics (name, content, subject_id) " +
+                    " VALUES (?, ?, ?)",
+                    (name, content, subject_id)
+                )
                 db.commit()
             except db.IntegrityError:
                 error = f"Topic {name} is already registered."
@@ -87,7 +100,17 @@ def create_topic():
                 return redirect(url_for("admin.subjects_show", subject_id=subject_id))
         flash(error)
     else:
-        return render_template('admin/create-topic.html')
+        return render_template('admin/topic-create.html', subject_id=subject_id)
+
+
+@bp.route('/topic/show')
+def topic_show():
+    topic_id = request.args.get('topic_id')
+    topic = get_db().execute(
+        f"SELECT * FROM topics where id = '{topic_id}'"
+    ).fetchone()
+    print('topic data', topic_id, topic)
+    return render_template('admin/topic-show.html', topic=topic)
 
 
 @bp.route('/login', methods=('GET', 'POST'))

@@ -1,0 +1,63 @@
+<!doctype html>
+
+<head>
+    <title>Create Subject | Project Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<section>
+
+    <!-- tailwind admin navbar -->
+    <nav class="flex items-center justify-between flex-wrap bg-gray-800 p-6">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+            <a href="/" class="text-white font-bold no-underline">
+                <span class="text-xl">Project Learner: Admin Panel</span>
+            </a>
+        </div>
+        <div class="flex items-center flex-shrink-0 text-white">
+            <a href="{{ url_for('admin.create_subject') }}" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Add Subject</span>
+            </a>
+            <a href="#aboutus" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Log Out</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- tailwind heading -->
+    <div class="flex flex-col md:flex-row">
+        <div class="flex-1 min-h-screen">
+            <div class="flex flex-col items-center justify-center p-6 md:p-12">
+                <div class="w-5/6 lg:w-1/2 mx-auto bg-white rounded shadow">
+                    <div class="py-4 px-8 text-black text-xl border-b border-grey-lighter">
+                        Create a subject
+                    </div>
+                    <form method="post">
+                        <div class="py-4 px-8">
+                            <div class="mb-4">
+                                <label class="block text-grey-darker text-sm font-bold mb-2" for="email">
+                                    Enter Subject Name:</label>
+                                <input class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+                                    id="name" name="name" type="name" placeholder="Subject Name">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-grey-darker text-sm font-bold mb-2" for="description">Enter
+                                    Subject
+                                    description</label>
+                                <textarea class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+                                    id="description" name="description" type="description"
+                                    placeholder="Subject description"></textarea>
+                            </div>
+                            <div class="flex items-center justify-between mt-8">
+                                <button
+                                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                                    type="submit">
+                                    Create
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Homepage - Flaskr</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <!-- tailwind navbar having icon, links of subjects, abouts us -->
+    <nav class="flex items-center justify-between flex-wrap bg-gray-800 p-6">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+            <a href="/" class="text-white font-bold no-underline">
+                <span class="text-xl">Project Learner</span>
+            </a>
+        </div>
+        <div class="flex items-center flex-shrink-0 text-white">
+            <a href="/" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Home</span>
+            </a>
+            <a href="#subjects" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Subjects</span>
+            </a>
+            <a href="#aboutus" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">About</span>
+            </a>
+            <a href="/auth/logout" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Log Out</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- tailwind heading -->
+    <div class="flex flex-col md:flex-row">
+        <div class="flex-1 ">
+            <div class="flex flex-col items-center justify-center pt-6 pb-2">
+                <h2 class="text-2xl font-bold leading-tight">
+                    Welcome Student,
+                </h2>
+            </div>
+        </div>
+    </div>
+    <!-- tailwind section to show list of subjects -->
+    <section id="subjects">
+        <div class="flex flex-col md:flex-row">
+            <div class="flex-1 min-h-screen">
+                <div class="flex flex-col items-center pt-6">
+                    <h2 class="text-2xl font-bold leading-tight">
+                        <p class="text-center font-light leading-tight">
+                            Explore all the subjects project learn offers currently
+                        </p>
+                    </h2>
+                    <br>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-2">Sl.no</th>
+                                <th class="px-4 py-2">Subject</th>
+                                <th class="px-4 py-2">Description</th>
+                                <th class="px-4 py-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subject in subjects %}
+                            <tr>
+                                <td class="border px-4 py-2">{{ subject.id }}</td>
+                                <td class="border px-4 py-2">{{ subject.name }}</td>
+                                <td class="border px-4 py-2">_</td>
+                                <!-- <td class="border px-4 py-2">Python is a programming language that is used to create
+                                    programs that can be run on a computer.</td> -->
+                                <td class="border px-4 py-2">
+                                    <a class="text-blue-500 hover:text-blue-700"
+                                        href="{{ url_for('subjects_show', subject_id=subject.id)}}">
+                                        <span class="font-bold">Discover topics</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- tailwind section to show about us -->
+    <section id="aboutus">
+        <div class="flex flex-col md:flex-row">
+            <div class="flex-1 min-h-screen">
+                <div class="flex flex-col items-center justify-center p-6 md:p-12">
+                    <h1 class="text-center text-3xl font-bold leading-tight">
+                        About Us
+                    </h1>
+                    <p class="text-center font-light leading-tight">
+                        Explore all the subjects project learn offers currently
+                    </p>
+                    <br><br>
+                    <hr><br>
+                    <p class="text-center font-light leading-tight">
+                        Project Learner is a website that provides students with a platform to learn and
+                        explore projects.
+                    </p>
+                    <p class="text-center font-light leading-tight">
+                        Project Learner is a website that provides students with a platform to learn and
+                        explore projects.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
