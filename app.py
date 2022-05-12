@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template
 
 import auth
+import admin
 
 app = Flask(__name__)
 app.config.from_mapping(
@@ -9,6 +10,7 @@ app.config.from_mapping(
     DATABASE=os.path.join('data', 'database.sqlite'),
 )
 
+app.register_blueprint(admin.bp)
 app.register_blueprint(auth.bp)
 
 
