@@ -11,10 +11,12 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 @bp.before_app_request
 def load_admin_loggedin():
     admin_logged_in = session.get('admin')
+    user_id = session.get('user_id')
     if admin_logged_in is None:
         g.admin = None
         login_path = url_for('auth.login')
-        if request.path != login_path:
+        print('user_id:', user_id)
+        if request.path != login_path and user_id is None:
             return redirect(login_path)
     else:
         g.admin = True

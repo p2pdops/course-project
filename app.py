@@ -11,13 +11,13 @@ app.config.from_mapping(
     DATABASE=os.path.join('data', 'database.sqlite'),
 )
 
-app.register_blueprint(admin.bp)
 app.register_blueprint(auth.bp)
+app.register_blueprint(admin.bp)
 
 
 @app.route('/')
 @auth.login_required
-def hello():
+def home_page():
     subjects = get_db().execute(
         'SELECT * FROM subjects'
     ).fetchall()
@@ -39,12 +39,14 @@ def subjects_show():
                            )
 
 
-@app.route('/read-topic')
+@app.route('/topic/read')
 def read_topic():
-    return render_template(
-        'read-topic.html',
-        subtitle="Admin/ Subjects/ Show",
-    )
+    topic_id = request.args.get('topic_id')
+    topic = get_db().execute(
+        f"SELECT * FROM topics where id = '{topic_id}'"
+    ).fetchone()
+    print('topic data', topic_id, topic)
+    return render_template('topic.html', topic=topic)
 
 
 app.run(host='0.0.0.0', port=3000, debug=True)

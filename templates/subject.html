@@ -34,7 +34,7 @@
                     {{ subject.name }}
                 </h1>
                 <p class="text-center font-light leading-tight">
-                    // here the subject de`scription
+                    {{ subject.description }}
                 </p>
 
                 <br><br>
@@ -45,6 +45,7 @@
                         <tr>
                             <th class="px-4 py-2">Sl.no</th>
                             <th class="px-4 py-2">Topic Name</th>
+                            <th class="px-4 py-2">Topic Overview</th>
                             <th class="px-4 py-2">
                             </th>
                         </tr>
@@ -54,9 +55,12 @@
                         <tr>
                             <td class="border px-4 py-2">{{ item.id }}</td>
                             <td class="border px-4 py-2">{{ item.name }}</td>
+                            <td class="border px-4 py-2">{{
+                                item.content[:
+                                30 if 30 < item.content.__len__() else item.content.__len__()]+'...' }} </td>
                             <td class="border px-4 py-2">
                                 <!-- tailwind button like a -->
-                                <a href="{{ url_for('admin.subjects_show', id=item.id) }}"
+                                <a href="{{ url_for('read_topic', topic_id=item.id) }}"
                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     Read
                                 </a>
