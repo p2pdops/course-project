@@ -15,4 +15,12 @@ def get_topics(subject_id, user_id):
         where subject_id = {subject_id}
         """
     ).fetchall()
+    topics = [dict(row) for row in topics]
+    for i, topic in enumerate(topics):
+        topic['last_score'] = topic['last_score'] or 0
+        if i == 0 or topics[i-1]['last_score'] > 0:
+            topic['allowed'] = True
+        else:
+            topic['allowed'] = False
+    print("topics", topics)
     return topics

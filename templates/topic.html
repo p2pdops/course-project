@@ -17,6 +17,7 @@
                 aria-label="Close"></a>
             <a class="navbar-brand" href="{{url_for('admin.admin_home')}}">Project Learn</a>
             <div class="navbar navbar-expand" id="navbarNav">
+                <a href="{{ url_for('quiz_attempt', topic_id=topic.id) }}" class="btn btn-primary">Attempt Quiz</a>
             </div>
         </div>
     </nav>

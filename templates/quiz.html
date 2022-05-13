@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <script src="{{ url_for('static', filename='tailwind.js') }}"></script>
+</head>
+
+<body>
+    <!-- tailwind nav with close button -->
+    <nav class="flex items-center justify-between flex-wrap bg-gray-800 p-6">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+            <a href="/" class="text-white font-bold no-underline">
+                <span class="text-xl">[X] Close Quiz</span>
+            </a>
+        </div>
+        <div class="flex items-center flex-shrink-0 text-white">
+            <a href="/" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Back to topic</span>
+            </a>
+            <!-- tailwind button to submit -->
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" type="submit">
+                Submit
+            </button>
+        </div>
+    </nav>
+    <div class="container">
+
+        <!-- tailwind heading -->
+        <div class="flex flex-col md:flex-row">
+            <div class="flex-1 ">
+                <div class="flex flex-col items-center justify-center pt-6 pb-2">
+                    <h2 class="text-2xl font-bold leading-tight">
+                        Quiz on Topic: {{ topic.name }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="flex flex-wrap justify-center">
+            {% for i, question in questions %}
+            <div class="w-full p-3">
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden px-10 py-5">
+                    <div class="flex flex-col">
+                        <div class="flex flex-row justify-between">
+                            <h2 class="text-lg font-bold">{{i+1}}. {{ question.question }}</h2>
+                        </div>
+                        <!-- tailwind choose the correct option layout  -->
+                        <div>
+                            <input type="radio" name="{{question.id}}" value="1">
+                            <label class="ml-2">{{question.option1}}</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="{{question.id}}" value="2">
+                            <label class="ml-2">{{question.option2}}</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="{{question.id}}" value="3">
+                            <label class="ml-2">{{question.option3}}</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="{{question.id}}" value="4">
+                            <label class="ml-2">{{question.option4}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <script>
+        </script>
+</body>
+
+</html>

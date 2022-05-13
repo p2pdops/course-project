@@ -1,9 +1,10 @@
 import os
 from db import get_db
-from flask import Flask, render_template, request
+from flask import Flask, g, render_template, request
 
 import routes.auth as auth
 import routes.admin as admin
+from utils.topics_helper import get_topics
 
 app = Flask(__name__)
 app.config.from_mapping(
@@ -30,9 +31,7 @@ def subjects_show():
     subject = get_db().execute(
         f"SELECT * FROM subjects where id = '{subject_id}'"
     ).fetchone()
-    topics = get_db().execute(
-        f"SELECT * FROM topics where subject_id = '{subject_id}'"
-    ).fetchall()
+    topics = get_topics(subject_id, g.user['id'])
     print('subject data', subject_id, subject)
     return render_template('subject.html', subject=subject,
                            topics=topics,
@@ -47,6 +46,23 @@ def read_topic():
     ).fetchone()
     print('topic data', topic_id, topic)
     return render_template('topic.html', topic=topic)
+
+
+@app.route('/topic/quiz')
+def quiz_attempt():
+    topic_id = request.args.get('topic_id')
+    topic = get_db().execute(
+        f"SELECT * FROM topics where id = '{topic_id}'"
+    ).fetchone()
+    questions = get_db().execute(
+        f"SELECT * FROM questions where topic_id = '{topic_id}'"
+    ).fetchall()
+
+    print('topic data', topic_id, topic)
+    return render_template('quiz.html',
+                           topic=topic,
+                           questions=enumerate(questions),
+                           )
 
 
 app.run(host='0.0.0.0', port=3000, debug=True)

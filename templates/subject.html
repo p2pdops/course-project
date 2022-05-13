@@ -59,10 +59,18 @@
                                 30 if 30 < item.content.__len__() else item.content.__len__()]+'...' }} </td>
                             <td class="border px-4 py-2">
                                 <!-- tailwind button like a -->
+                                {% if item.score %}
+                                Complete previous topic
+                                {% else %}
+                                {% if not item.allowed %} <p> Complete before topic</p>
+                                {% else %}
                                 <a href="{{ url_for('read_topic', topic_id=item.id) }}"
                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     Read
                                 </a>
+                                {% endif %}
+                                {% endif %}
+
                             </td>
                         </tr>
                         {% endfor %}
