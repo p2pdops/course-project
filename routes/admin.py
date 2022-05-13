@@ -9,24 +9,23 @@ from db import get_db
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
+def admin_login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if not g.admin:
+            return redirect(url_for('auth.login'))
+        return view(**kwargs)
+    return wrapped_view
+
+
 @bp.before_app_request
 def load_admin_loggedin():
-    if not request.path.startswith('/admin'):
-        return
     admin_logged_in = session.get('admin')
-    user_id = session.get('user_id')
-    if admin_logged_in is None:
-        g.admin = None
-        login_path = url_for('auth.login')
-        print('user_id:', user_id)
-        if request.path != login_path and user_id is None:
-            return redirect(login_path)
-    else:
-        g.admin = True
-        g.user = get_db().execute("SELECT * FROM users WHERE id = '1'").fetchone()
+    g.admin = admin_logged_in is not None
 
 
 @bp.route('/')
+@admin_login_required
 def admin_home():
     subjects = get_db().execute(
         'SELECT * FROM subjects'
@@ -38,6 +37,7 @@ def admin_home():
 
 
 @bp.route('/subjects/create', methods=('GET', 'POST'))
+@admin_login_required
 def create_subject():
     if request.method == 'POST':
         name = request.form['name']
@@ -62,6 +62,7 @@ def create_subject():
 
 
 @bp.route('/subjects/show')
+@admin_login_required
 def subjects_show():
     subject_id = request.args.get('subject_id')
     subject = get_db().execute(
@@ -80,6 +81,7 @@ def subjects_show():
 
 
 @bp.route('/topic/create', methods=('GET', 'POST'))
+@admin_login_required
 def create_topic():
     subject_id = request.args.get('subject_id')
     if request.method == 'POST':
@@ -108,6 +110,7 @@ def create_topic():
 
 
 @bp.route('/topic/questions', methods=('GET', 'POST'))
+@admin_login_required
 def topic_questions():
     topic_id = request.args.get('topic_id')
     if request.method == 'POST':
@@ -147,6 +150,7 @@ def topic_questions():
 
 
 @bp.route('/topic/show')
+@admin_login_required
 def topic_show():
     topic_id = request.args.get('topic_id')
     topic = get_db().execute(
@@ -154,44 +158,3 @@ def topic_show():
     ).fetchone()
     print('topic data', topic_id, topic)
     return render_template('admin/topic-show.html', topic=topic)
-
-
-@bp.route('/login', methods=('GET', 'POST'))
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        db = get_db()
-        error = None
-        user = db.execute(
-            'SELECT * FROM users WHERE email = ?', (email,)
-        ).fetchone()
-
-        if user is None:
-            error = 'Incorrect email.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
-
-        if error is None:
-            session.clear()
-            session['user_id'] = user['id']
-            return redirect('/')
-
-        flash(error)
-
-    return render_template('auth/login.html')
-
-
-@bp.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/')
-
-
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
-        return view(**kwargs)
-    return wrapped_view

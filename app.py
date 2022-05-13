@@ -26,6 +26,7 @@ def home_page():
 
 
 @app.route('/subjects/show')
+@auth.login_required
 def subjects_show():
     subject_id = request.args.get('subject_id')
     subject = get_db().execute(
@@ -39,6 +40,7 @@ def subjects_show():
 
 
 @app.route('/topic/read')
+@auth.login_required
 def read_topic():
     topic_id = request.args.get('topic_id')
     topic = get_db().execute(
@@ -49,6 +51,7 @@ def read_topic():
 
 
 @app.route('/topic/quiz')
+@auth.login_required
 def quiz_attempt():
     topic_id = request.args.get('topic_id')
     topic = get_db().execute(
