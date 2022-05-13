@@ -2,7 +2,7 @@
 
 <head>
     <title>{{ subject.name }} | Project Learn</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{{ url_for('static', filename='tailwind.js') }}"></script>
 </head>
 
 <section>
@@ -67,6 +67,11 @@
                                 <!-- tailwind button like a -->
                                 <a href="{{ url_for('admin.topic_show', topic_id=item.id) }}"
                                     class="text-blue-500 text-sm"> View </a>
+                            </td>
+                            <td class="border px-4 py-2">
+                                <!-- tailwind button like a -->
+                                <a href="{{ url_for('admin.topic_questions', topic_id=item.id) }}"
+                                    class="text-blue-500 text-sm"> Edit Quiz </a>
                             </td>
                         </tr>
                         {% endfor %}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz/Topic</title>
+    <script src="{{ url_for('static', filename='tailwind.js') }}"></script>
+</head>
+
+<body>
+    <!-- tailwind admin navbar -->
+    <nav class="flex items-center justify-between flex-wrap bg-gray-800 p-6">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+            <a href="/" class="text-white font-bold no-underline">
+                <span class="text-xl">Project Learner: Admin Panel</span>
+            </a>
+        </div>
+        <div class="flex items-center flex-shrink-0 text-white">
+            <a href="{{ url_for('admin.create_subject') }}" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Add Subject</span>
+            </a>
+            <a href="#aboutus" class="text-white font-bold no-underline px-2">
+                <span class="text-xl">Log Out</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- tailwind 2 halfs -->
+    <div class="flex flex-col md:flex-row">
+        <div class="flex-1 min-h-screen">
+            <div class="flex flex-col items-center justify-center p-6 md:p-12">
+                <h1 class="text-center text-xl font-bold leading-tight">
+                    {{subject.name }} > {{ topic.name }}'s Quiz Questions
+                </h1>
+                <!-- list of questions cards -->
+                <div class="flex flex-wrap justify-center">
+                    {% for i, question in questions %}
+                    <div class="w-full p-3">
+                        <div class="bg-white shadow-lg rounded-lg overflow-hidden px-10 py-5">
+                            <div class="flex flex-col">
+                                <div class="flex flex-row justify-between">
+                                    <h2 class="text-lg font-bold">{{i+1}}. {{ question.question }}</h2>
+                                </div>
+                                <div class="flex flex-row justify-between">
+                                    <!-- tailwind list options -->
+                                    <ol class="list-decimal list-inside">
+                                        Options:
+                                        <li class="list-item text-lg">{{ question.option1 }}</li>
+                                        <li class="list-item text-lg">{{ question.option2 }}</li>
+                                        <li class="list-item text-lg">{{ question.option3 }}</li>
+                                        <li class="list-item text-lg">{{ question.option4 }}</li>
+                                    </ol>
+                                    <!-- <a href=" admin.question_edit', question_id=question.id) }}" -->
+                                    <!-- class="text-blue-500 hover:text-blue-700">Edit</a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="flex-1 min-h-screen">
+            <div class="flex flex-col items-center justify-center p-6 ">
+                <!-- tailwind card -->
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden mt-10">
+                    <div class="px-6 py-4">
+                        <h1 class="text-center text-3xl font-bold leading-tight">
+                            Add Question Form
+                        </h1>
+                        <form class="w-full" method="post">
+                            <div class="py-4 px-8">
+                                <div class="mb-4">
+                                    <label class="block text-grey-darker text-sm font-bold mb-2" for="email">
+                                        Enter the Question:</label>
+                                    <input class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+                                        id="question" name="question" type="question" placeholder="Question ">
+                                </div>
+                                <ol>
+                                    <li>
+                                        <input class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+                                            id="option1" name="option1" type="option1" placeholder="Option 1">
+                                    </li>
+                                    <li>
+                                        <input class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+                                            id="option2" name="option2" type="option2" placeholder="Option 2">
+                                    </li>
+                                    <li>
+                                        <input class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+                                            id="option3" name="option3" type="option3" placeholder="Option 3">
+                                    </li>
+                                    <li>
+                                        <input class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+                                            id="option4" name="option4" type="option4" placeholder="Option 4">
+                                    </li>
+                                </ol>
+                                <div class="my-4">
+                                    <label class="block text-grey-darker text-sm font-bold mb-2" for="email">
+                                        Select correct option:</label>
+
+                                    <!-- tailwind radio -->
+                                    <div class="flex flex-row flex-wrap -mx-3 mb-6">
+                                        <div class="px-3">
+                                            <label class="inline-flex items-center">
+                                                <input class="form-radio" type="radio" name="correct" value="1">
+                                                <span class="ml-2 text-sm">Option 1</span>
+                                            </label>
+                                        </div>
+                                        <div class="px-3">
+                                            <label class="inline-flex items-center">
+                                                <input class="form-radio" type="radio" name="correct" value="2">
+                                                <span class="ml-2 text-sm">Option 2</span>
+                                            </label>
+                                        </div>
+                                        <div class="px-3">
+                                            <label class="inline-flex items-center">
+                                                <input class="form-radio" type="radio" name="correct" value="3">
+                                                <span class="ml-2 text-sm">Option 3</span>
+                                            </label>
+                                        </div>
+                                        <div class="px-3">
+                                            <label class="inline-flex items-center">
+                                                <input class="form-radio" type="radio" name="correct" value="4">
+                                                <span class="ml-2 text-sm">Option 4</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between mt-8">
+                                    <button
+                                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 w-full rounded-full"
+                                        type="submit">
+                                        Add Question
+                                    </button>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

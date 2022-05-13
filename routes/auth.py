@@ -93,7 +93,7 @@ def logout():
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if g.user is None:
+        if g.user is None and request.path != '/auth/login' and request.path != '/auth/register':
             print("Login required")
             return redirect(url_for('auth.login'))
         return view(**kwargs)

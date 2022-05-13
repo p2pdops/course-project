@@ -2,8 +2,8 @@ import os
 from db import get_db
 from flask import Flask, render_template, request
 
-import auth
-import admin
+import routes.auth as auth
+import routes.admin as admin
 
 app = Flask(__name__)
 app.config.from_mapping(

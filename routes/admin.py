@@ -1,4 +1,5 @@
 import functools
+from re import T
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -10,6 +11,8 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 @bp.before_app_request
 def load_admin_loggedin():
+    if not request.path.startswith('/admin'):
+        return
     admin_logged_in = session.get('admin')
     user_id = session.get('user_id')
     if admin_logged_in is None:
@@ -30,7 +33,6 @@ def admin_home():
     ).fetchall()
     return render_template(
         'admin/index.html',
-        subtitle="Admin/ Subjects/ all",
         subjects=subjects
     )
 
@@ -47,8 +49,8 @@ def create_subject():
         if error is None:
             try:
                 db.execute(
-                    f"INSERT INTO subjects(name, description) " +
-                    f"VALUES('{name}', '{description}')")
+                    f"INSERT INTO subjects(name, description) VALUES(?,?)",
+                    (name, description))
                 db.commit()
             except db.IntegrityError:
                 error = f"Subject {name} is already registered."
@@ -103,6 +105,45 @@ def create_topic():
         flash(error)
     else:
         return render_template('admin/topic-create.html', subject_id=subject_id)
+
+
+@bp.route('/topic/questions', methods=('GET', 'POST'))
+def topic_questions():
+    topic_id = request.args.get('topic_id')
+    if request.method == 'POST':
+        question = request.form['question']
+        option1 = request.form['option1']
+        option2 = request.form['option2']
+        option3 = request.form['option3']
+        option4 = request.form['option4']
+        correct = request.form['correct']
+
+        print('question:', question, option1,
+              option2, option3, option4, correct)
+        if question and option1 and option2 and option3 and option4 and correct:
+            get_db().execute(
+                'INSERT INTO questions (question, option1, option2, option3, option4, correct, topic_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                (question, option1, option2, option3, option4, correct, topic_id)
+            )
+            get_db().commit()
+            return redirect(url_for("admin.topic_questions", topic_id=topic_id))
+        else:
+            flash('Please fill all fields')
+    else:
+        topic = dict(get_db().execute(
+            f"SELECT * FROM topics where id = '{topic_id}'"
+        ).fetchone())
+        subject = dict(get_db().execute(
+            f"SELECT * FROM subjects where id = '{topic['subject_id']}'"
+        ).fetchone())
+        questions = enumerate(get_db().execute(
+            f"SELECT * FROM questions where topic_id = '{topic_id}'"
+        ).fetchall())
+        print('topic data', topic, subject, questions)
+        return render_template('admin/quiz-edit.html',
+                               topic=topic,
+                               subject=subject,
+                               questions=questions)
 
 
 @bp.route('/topic/show')
