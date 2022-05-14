@@ -38,9 +38,8 @@ CREATE TABLE questions (
 );
 
 CREATE TABLE user_scores (
-  id        INTEGER PRIMARY KEY AUTOINCREMENT,
+  topic_id  INTEGER PRIMARY KEY AUTOINCREMENT,
   score     INTEGER,
-  topic_id  INTEGER,
   user_id   INTEGER,
   FOREIGN KEY(topic_id) REFERENCES topics(id),
   FOREIGN KEY(user_id) REFERENCES users(id)

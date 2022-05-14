@@ -59,9 +59,6 @@
                                 30 if 30 < item.content.__len__() else item.content.__len__()]+'...' }} </td>
                             <td class="border px-4 py-2">
                                 <!-- tailwind button like a -->
-                                {% if item.score %}
-                                Complete previous topic
-                                {% else %}
                                 {% if not item.allowed %} <p> Complete before topic</p>
                                 {% else %}
                                 <a href="{{ url_for('read_topic', topic_id=item.id) }}"
@@ -69,9 +66,13 @@
                                     Read
                                 </a>
                                 {% endif %}
-                                {% endif %}
-
                             </td>
+                            {% if item.last_score %}
+                            <td class="border px-4 py-2">
+                                Quiz:
+                                {{item.last_score}}%
+                            </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>

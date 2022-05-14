@@ -1,10 +1,12 @@
+from crypt import methods
+from math import ceil
 import os
 from db import get_db
-from flask import Flask, g, render_template, request
+from flask import Flask, g, render_template, request, redirect, url_for
 
 import routes.auth as auth
 import routes.admin as admin
-from utils.topics_helper import get_topics
+from utils.topics_helper import get_topics, get_user_score, insert_score
 
 app = Flask(__name__)
 app.config.from_mapping(
@@ -50,7 +52,7 @@ def read_topic():
     return render_template('topic.html', topic=topic)
 
 
-@app.route('/topic/quiz')
+@app.route('/topic/quiz', methods=['GET', 'POST'])
 @auth.login_required
 def quiz_attempt():
     topic_id = request.args.get('topic_id')
@@ -60,12 +62,37 @@ def quiz_attempt():
     questions = get_db().execute(
         f"SELECT * FROM questions where topic_id = '{topic_id}'"
     ).fetchall()
+    correction_map = {dict(x)['id']: dict(x)['correct'] for x in questions}
+    print('correction_map', correction_map)
+    if request.method == 'POST':
+        max_score = len(questions)
+        score = 0
+        for question_id, answer in request.form.items():
+            print('question_id', question_id, answer, 'right ans is:',
+                  correction_map[int(question_id)])
+            if int(answer) == correction_map[int(question_id)]:
+                score += 1
+        res_score = ceil((score/max_score)*100)
+        print('quiz score', f'{score}/{max_score}= {res_score}%')
+        insert_score(res_score, topic_id, int(g.user['id']))
+        return redirect(url_for('quiz_result', topic_id=topic_id, score=0))
+    else:
+        print('topic data', topic_id, topic)
+        return render_template('quiz.html',
+                               topic=topic,
+                               questions=enumerate(questions),
+                               )
 
-    print('topic data', topic_id, topic)
-    return render_template('quiz.html',
-                           topic=topic,
-                           questions=enumerate(questions),
-                           )
+
+@app.route('/topic/quiz/result')
+@auth.login_required
+def quiz_result():
+    topic_id = request.args.get('topic_id')
+    topic = get_db().execute(
+        f"SELECT * FROM topics where id = '{topic_id}'"
+    ).fetchone()
+    user_score = get_user_score(topic_id, g.user['id'])
+    return render_template('quiz_result.html', topic=topic, score=int(user_score['score']))
 
 
 app.run(host='0.0.0.0', port=3000, debug=True)
